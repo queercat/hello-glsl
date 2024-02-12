@@ -6,7 +6,7 @@ module.exports = {
   entry: './index.ts',
   mode: 'development',
   devServer: {
-    watchFiles: ["./shaders/*"]
+    watchFiles: ["./shaders/*", "*.html"]
   },
   module: {
     rules: [
