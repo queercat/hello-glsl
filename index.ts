@@ -1,4 +1,15 @@
-import { BoxGeometry, Clock, Mesh, PerspectiveCamera, Scene, ShaderMaterial, Vector2, WebGLRenderer } from "three";
+import {
+  BoxGeometry,
+  Camera,
+  Clock,
+  Mesh,
+  PerspectiveCamera,
+  Scene,
+  ShaderMaterial,
+  Vector2,
+  WebGLRenderer,
+  PlaneGeometry,
+} from "three";
 
 import vertex from "/shaders/vertex.glsl";
 import fragment from "/shaders/fragment.glsl";
@@ -13,13 +24,11 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 
 const scene = new Scene();
-const camera = new PerspectiveCamera(45, width / height, 0.1, 100);
+const camera = new Camera();
 
-camera.position.set(0, 0, 5);
-camera.lookAt(0, 0, 0);
+camera.position.z = 1;
 
 const renderer = new WebGLRenderer();
-renderer.setSize(width, height);
 
 target.appendChild(renderer.domElement);
 
@@ -31,6 +40,8 @@ const uniforms = {
   u_mouse: { type: "v2", value: new Vector2() },
 };
 
+const geometry = new PlaneGeometry(2, 2);
+
 const rectangle = new BoxGeometry(1, 1, 1);
 
 const material = new ShaderMaterial({
@@ -38,28 +49,30 @@ const material = new ShaderMaterial({
   uniforms,
 });
 
-const cube = new Mesh(rectangle, material);
+const cube = new Mesh(geometry, material);
 
 scene.add(cube);
 
 const render = () => {
   renderer.render(scene, camera);
   uniforms.u_time.value += clock.getDelta();
-  cube.rotateX(0.01);
-  cube.rotateY(0.01);
-  cube.rotateZ(0.01);
+
   window.requestAnimationFrame(render);
 };
 
 const onWindowResize = () => {
+  renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  uniforms.u_resolution.value.x = renderer.domElement.width;
-  uniforms.u_resolution.value.y = renderer.domElement.height;
+  uniforms.u_resolution.value.x = window.innerWidth;
+  uniforms.u_resolution.value.y = window.outerHeight;
 };
 
-window.addEventListener("resize", () => {
-  onWindowResize();
-});
+window.onmousemove = (e) => {
+  uniforms.u_mouse.value.x = e.pageX;
+  uniforms.u_mouse.value.y = e.pageY;
+};
+
+window.addEventListener("resize", onWindowResize, false);
 
 onWindowResize();
 render();
