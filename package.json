@@ -13,8 +13,10 @@
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/three": "^0.161.2",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "prettier": "^3.2.5",
+    "raw-loader": "^4.0.2",
     "ts-loader": "^9.5.1",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
